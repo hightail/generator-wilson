@@ -6,7 +6,7 @@ Yeoman generators for wilson.
 
  Install: `npm install -g hightail/generator-wilson`
 
- Usage: `yo wilson:<generator`
+ Usage: `yo wilson:<generator>`
 
  Available Generators:
    * component
