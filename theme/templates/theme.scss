@@ -1,0 +1,55 @@
+/**********************************************************************
+* <%= themeName %> Theme
+*
+* created by <%= author %>
+* copyright <%= currentYear %> Hightail Inc. All Rights Reserved
+**********************************************************************/
+
+
+/***********************
+* Color Definitions
+***********************/
+//$primary-color:                   #FFFFFF;
+//$secondary-color:                 #FFFFFF;
+
+// Buttons
+//$button-color:                    #FFFFFF;
+//$button-color-hover:              #FFFFFF;
+//$button-color-disabled:           #FFFFFF;
+
+// Alerts
+//$alert-warning-color:             #FFFFFF;
+//$alert-error-color:               #FFFFFF;
+//$alert-info-color:                #FFFFFF;
+//$alert-success-color:             #FFFFFF;
+//$alert-opacity:                   #FFFFFF;
+
+//Pricing Tables
+//$pricing-panel-header-color:      #FFFFFF;
+//$pricing-panel-background-color:  #FFFFFF;
+//$pricing-panel-shadow-color:      #FFFFFF;
+
+
+/***********************
+* Asset Definitions
+***********************/
+
+//Theme specific asset path
+$THEME_ASSET_PATH: '/client/appearance/themes/<%= baseName %>/assets/';
+$header-logo-path: $THEME_ASSET_PATH + "logos/logo-black.png" !default;
+
+
+/*************************************************
+ * Font Definitions
+ ************************************************/
+$FONT_PATH: $THEME_ASSET_PATH + 'fonts/';
+
+//$primary-font:              Verdana, Helvetica, Arial, sans-serif;
+//$primary-font-bold:         Verdana, Helvetica, Arial, sans-serif;
+//$primary-font-light:        Verdana, Helvetica, Arial, sans-serif;
+//$primary-font-extralight:   Verdana, Helvetica, Arial, sans-serif;
+
+//$secondary-font:            Verdana, Helvetica, Arial, sans-serif;
+//$secondary-font-bold:       Verdana, Helvetica, Arial, sans-serif;
+//$secondary-font-light:      Verdana, Helvetica, Arial, sans-serif;
+//$secondary-font-extralight: Verdana, Helvetica, Arial, sans-serif;

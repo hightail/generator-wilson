@@ -1,0 +1,26 @@
+{
+  "name": "generator-wilson",
+  "version": "0.0.0",
+  "description": "A Yeoman generator for wilson",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "homepage": "hightail.com",
+  "bugs": "hightail.com",
+  "author": {
+    "name": "Hunter Novak",
+    "email": "hunter.novak@hightail.com",
+    "url": "https://github.com/hunternovak"
+  },
+  "main": "app/index.js",
+  "repository": "hightail/generator-wilson",
+  "scripts": {},
+  "dependencies": {
+    "yeoman-generator": "~0.13.3",
+    "underscore": "~1.5.1",
+    "chalk": "~0.2.0"
+  },
+  "devDependencies": {},
+  "engines": {},
+  "licenses": []
+}
