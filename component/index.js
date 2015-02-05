@@ -24,11 +24,9 @@ var logf;
 
 // Components directory path
 var componentsDir = path.join('client/src/components/');
-var sassFilesDir = path.join('client/appearance/base/common/styles/components');
+var sassFilesDir = path.join('client/src/components/');
 var pageCompDir = path.join(componentsDir, 'pages');
 var buildingCompDir = path.join(componentsDir, 'building-blocks');
-var pageSassDir = path.join(sassFilesDir, 'pages');
-var buildingSassDir = path.join(sassFilesDir, 'building-blocks');
 var buildingTestDir = path.join('test/client/components/building-blocks');
 var pageTestDir = path.join('test/client/components/pages');
 
@@ -81,7 +79,6 @@ function checkIsPage(componentName) {
 function getComponentInfo(componentName, isPage) {
   var cn = componentName;
   var compPath = isPage ? pageCompDir : buildingCompDir;
-  var sassPath = isPage ? pageSassDir : buildingSassDir;
   var testDir  = isPage ? pageTestDir : buildingTestDir;
 
   //Construct all necessary paths
@@ -91,11 +88,12 @@ function getComponentInfo(componentName, isPage) {
     camelName: _.camelize(componentName),
     directiveName: getDirectiveName(componentName),
     componentDir: path.join(compPath, cn),
-    scssPath: path.join(sassPath, cn + '.scss'),
+    scssPath: path.join(compPath, cn, 'styles', cn + '.scss'),
     testDir: path.join(testDir, cn)
   }
 
-  info.templateDir = path.join(info.componentDir, 'templates');
+  info.templateDir  = path.join(info.componentDir, 'templates');
+  info.stylesDir    = path.join(info.componentDir, 'styles');
   info.htmlTemplatePath = path.join(info.templateDir, cn + '.html');
   info.mobileHtmlTemplatePath = path.join(info.templateDir, cn + '.mobile.html');
   info.tabletHtmlTemplatePath = path.join(info.templateDir, cn + '.tablet.html');
@@ -167,6 +165,10 @@ var ComponentGenerator = module.exports = function ComponentGenerator(args, opti
       _self.isPage = isPage;
     };
 
+    this._setRoutePath = function(routePath) {
+      _self.routePath = routePath;
+    };
+
     this._setConfirmRemove = function(confirm) {
       _self.confirmRemove = confirm;
     };
@@ -190,7 +192,7 @@ var ComponentGenerator = module.exports = function ComponentGenerator(args, opti
     _self.isComponentNameSet = false;
 
     //These are services that are REQUIRED in our components
-    _self.requiredComponentServiceArray = ['ComponentFactoryService', '$scope', '$attrs'];
+    _self.requiredComponentServiceArray = ['$scope'];
 
     //This is ALL services that will be used in this component
     _self.serviceArray = [];
@@ -240,95 +242,126 @@ var ComponentGenerator = module.exports = function ComponentGenerator(args, opti
 util.inherits(ComponentGenerator, yeoman.generators.Base);
 
 ComponentGenerator.prototype.askFor = function askFor() {
-    var _self = this;
-    var prompts = [];
+  var _self       = this;
+  var cb          = this.async();
+
+  var mainPrompts = [];
+  var pagePrompts = [];
+  var metaPrompts = [];
+
+  function handleMainPrompts(props) {
+    var isPage = false;
+    if (props.componentName) { _self._setComponentName(props.componentName); }
+    if (props.isPage) {
+      isPage = props.isPage.toLowerCase() === 'yes';
+      _self._setIsPage(isPage);
+    }
+
+    if (isPage) {
+      _self.prompt(pagePrompts, handlePagePrompts);
+    } else {
+      _self.prompt(metaPrompts, handleMetaPrompts);
+    }
+  }
+
+  function handlePagePrompts(props) {
+    if (props.routePath)  { _self._setRoutePath(props.routePath); }
+    if (props.routeTitle) { _self._setRouteTitle(props.routeTitle); }
+
+    _self.prompt(metaPrompts, handleMetaPrompts);
+  }
+
+  function handleMetaPrompts(props) {
+    if (props.serviceList) {
+      var services = props.serviceList;
+      if(services != "no") {
+        _self.serviceArray = _.map(props.serviceList.split(','), function(part) {
+          return _.trim(part);
+        });
+      }
+    }
+    if (props.author) {
+      _self._setAuthor(props.author);
+    }
+    if (props.includeTests) {
+      var includeTests = props.includeTests.toLowerCase() === 'yes';
+      _self._setIncludeTests(includeTests);
+    }
+
+    cb();
+  }
 
 
   if (_self.removeComponent == true) {
+    var removePrompts = [];
+
     //If we didnt get the component name from the args then prompt the user for one
     if(this.isComponentNameSet == false) {
-      prompts.push({
+      removePrompts.push({
         name: 'componentName',
         message: 'Which component would you like to remove?'
       });
     }
 
-    prompts.push({
+    removePrompts.push({
       name: 'confirm',
       message: 'Are you sure you want to remove this component (yes/no)?',
       default: 'no'
     });
 
+    this.prompt(removePrompts, function(props) {
+      if (props.componentName) { _self._setComponentName(props.componentName); }
+      if (props.confirm) {
+        var confirm = props.confirm.toLowerCase() === 'yes';
+        _self._setConfirmRemove(confirm);
+      }
+
+      cb();
+    });
+
   } else {
+
     //If we didn't get the component name from the args then prompt the user for one
     if(this.isComponentNameSet == false) {
-        prompts.push({
+        mainPrompts.push({
             name: 'componentName',
             message: 'What is the name of the component (e.g. my-component-name)?'
         });
     }
 
     // Type of Component
-    prompts.push({
+    mainPrompts.push({
       name: 'isPage',
       message: 'Will this component be used to represent a top-level page (yes/no)?',
       default: 'no'
     });
 
+    pagePrompts.push({
+      name: 'routePath',
+      message: 'Add a route for this page (blank for no route): ',
+      default: false
+    });
+
     //Additional services prompt
-    prompts.push({
+    metaPrompts.push({
         name: 'serviceList',
         message: 'Additional services (e.g. $http, $location)?',
         default: 'no'
     });
 
-    prompts.push({
+    metaPrompts.push({
       name: 'includeTests',
       message: 'Should I provision test files for this component?',
       default: 'no'
     });
 
-    prompts.push({
+    metaPrompts.push({
       name: 'author',
       message: 'May I ask who is creating this component?',
       default: _self.defaults.author
     });
-  }
 
-  if(prompts.length > 0) {
-      var cb = this.async();
-
-      this.prompt(prompts, function (props) {
-          if (props.componentName) {
-              this._setComponentName(props.componentName);
-          }
-          if (props.serviceList) {
-              var services = props.serviceList;
-              if(services != "no") {
-                  this.serviceArray = _.map(props.serviceList.split(','), function(part) {
-                      return _.trim(part);
-                  });
-              }
-
-              //console.log(this.serviceArray);
-          }
-          if (props.isPage) {
-            var isPage = props.isPage.toLowerCase() === 'yes';
-            this._setIsPage(isPage);
-          }
-          if (props.author) {
-            this._setAuthor(props.author);
-          }
-          if (props.confirm) {
-            var confirm = props.confirm.toLowerCase() === 'yes';
-            this._setConfirmRemove(confirm);
-          }
-          if (props.includeTests) {
-            var includeTests = props.includeTests.toLowerCase() === 'yes';
-            this._setIncludeTests(includeTests);
-          }
-          cb();
-      }.bind(this));
+    this.prompt(mainPrompts, handleMainPrompts);
   }
 };
 
@@ -351,13 +384,19 @@ ComponentGenerator.prototype.app = function app() {
       logf("Removing: %s", componentInfo.componentDir);
       deleteFolderRecursive(componentInfo.componentDir);
 
+      //Removing any possible routes for this component
+      var routeFile   = path.join('client/routing.json');
+      var routeConfig = null;
+      if (fs.existsSync(routeFile)) {
+        routeConfig = JSON.parse(fs.readFileSync(routeFile, { encoding: 'UTF-8' }));
+        var componentIndex = _.findIndex(routeConfig.routes, { component: this.componentName });
+        routeConfig.routes.splice(componentIndex, 1);
+        fs.writeFileSync(routeFile, JSON.stringify(routeConfig, undefined, 2), { encoding: 'UTF-8'} );
+      }
+
       //Remove test directory
       logf("Removing: %s", componentInfo.testDir);
       deleteFolderRecursive(componentInfo.testDir);
-
-      //Remove the SASS
-      logf("Removing: %s", componentInfo.scssPath);
-      fs.unlinkSync(componentInfo.scssPath);
     } else {
       logf(chalk.red("Remove Cancelled."));
       process.exit(1);
@@ -387,10 +426,32 @@ ComponentGenerator.prototype.app = function app() {
     this.mkdir(componentInfo.templateDir);
 
     //Create styles directory
-    //this.mkdir(stylesDir);
+    this.mkdir(componentInfo.stylesDir);
 
     if(this.isPage) {
       this.defaultBehaviors = ' ht-track-page';
+
+      if (this.routePath) {
+        var routeFile   = path.join('client/routing.json');
+        var routeConfig = null;
+        if (fs.existsSync(routeFile)) {
+          routeConfig = JSON.parse(fs.readFileSync(routeFile, { encoding: 'UTF-8' }));
+
+          var title = this.componentName;
+
+          if (routeConfig.routes.length) { title = routeConfig.routes[0].title; }
+
+          routeConfig.routes.unshift({
+            "path": this.routePath,
+            "component": this.componentName,
+            "title": title,
+            "options": {}
+          });
+
+          fs.writeFileSync(routeFile, JSON.stringify(routeConfig, undefined, 2), { encoding: 'UTF-8'} );
+        }
+      }
+
     } else {
       this.defaultBehaviors = '';
     }

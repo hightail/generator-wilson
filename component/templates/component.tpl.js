@@ -18,8 +18,6 @@
 angular.wilson.component('<%=componentName%>', {
   <% if (isPage) { print('page: true,'); } %>
   controller: [<%=serviceList1%>, function(<%=serviceList2%>) {
-    var controller = this;
-    ComponentFactoryService.init('<%=componentName%>', controller, $scope<% if (!isPage) { print(', $attrs'); } %>);
 
 //  controller.setState({
 //    initial: '',
@@ -29,6 +27,7 @@ angular.wilson.component('<%=componentName%>', {
 //    timeouts: [],
 //    callbacks: {}
 //  });
+
   }]<% if (!isPage) { print(','); } %>
   <% if (!isPage) {  %>
   link: function($scope, $element, $attrs, controller) {
