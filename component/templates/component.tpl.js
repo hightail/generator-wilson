@@ -17,20 +17,24 @@
 
 angular.wilson.component('<%=componentName%>', {
   <% if (isPage) { print('page: true,'); } %>
-  controller: [<%=serviceList1%>, function(<%=serviceList2%>) {
+  controller: [<%=serviceList1%>,
+    function(<%=serviceList2%>) {
+      var controller = this;
 
-//  controller.setState({
-//    initial: '',
-//    events: [
-//      { name: '',  from: '',  to: '' }
-//    ],
-//    timeouts: [],
-//    callbacks: {}
-//  });
+      //  controller.setState({
+      //    initial: '',
+      //    events: [
+      //      { name: '',  from: '',  to: '' }
+      //    ],
+      //    timeouts: [],
+      //    callbacks: {}
+      //  });
 
-  }]<% if (!isPage) { print(','); } %>
+    }
+  ]<% if (!isPage) { print(','); } %>
   <% if (!isPage) {  %>
   link: function($scope, $element, $attrs, controller) {
+
   }
   <% } %>
 });

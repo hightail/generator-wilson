@@ -56,10 +56,10 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
     }
 
     this._setServiceName = function(serviceName) {
-        _self.baseName = serviceName.replace(/[Ss]ervice/g, '');
+        _self.baseName = serviceName;
 
         // Service Name
-        _self.serviceName= _self.baseName + 'Service';
+        _self.serviceName = _self.baseName;
 
         _self.serviceFile = _self.serviceName + '.js';
 
@@ -68,6 +68,10 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
         logf(chalk.red("ERROR") + ": Service '%s' already exists in '%s'. Choose a new service name or remove the existing service.", _self.serviceName, _self.servicesDir);
         process.exit(1);
       }
+    }
+
+    this._setServiceDir = function(dir) {
+      _self.servicesDir = path.join(servicesDir, dir);
     }
 
     this._setConfirmRemove = function(confirm) {
@@ -157,6 +161,12 @@ ServiceGenerator.prototype.askFor = function askFor() {
         });
       }
 
+      prompts.push({
+        name: 'serviceDir',
+        message: 'Should I put this in a special service folder? (e.g. resources, utilities)',
+        default: 'no'
+      });
+
       //Additional services prompt
       prompts.push({
         name: 'serviceList',
@@ -178,6 +188,9 @@ ServiceGenerator.prototype.askFor = function askFor() {
         this.prompt(prompts, function (props) {
             if(props.serviceName) {
                 this._setServiceName(props.serviceName);
+            }
+            if(props.serviceDir && props.serviceDir !== 'no') {
+              this._setServiceDir(props.serviceDir);
             }
             if(props.serviceList) {
                 var services = props.serviceList;
@@ -223,6 +236,8 @@ ServiceGenerator.prototype.app = function app() {
       //Make the services array unique
       this.serviceArray = _.union(this.requiredServiceArray, this.serviceArray);
 
+      this.noServices = this.serviceArray.length > 0 ? false : true;
+
       //Create a list of unquoted services (e.g. SDKService)
       this.serviceList = this.serviceArray.join(', ');
 
@@ -239,6 +254,10 @@ ServiceGenerator.prototype.app = function app() {
         logf(chalk.red("ERROR") + ": Service '%s' already exists in '%s'. Choose a new service name or remove the existing service.", sn, servicesDir);
         process.exit(1);
       } else {
+
+        // Make the services sub directory if it doesn't already exist
+        if (!fs.existsSync(servicesDir)) { fs.mkdirSync(servicesDir); }
+
         //Create all necessary files
         logf("Generating GSD Service '%s'", sn);
 

@@ -1,5 +1,5 @@
 /**
- * <%= baseName %> Service
+ * <%= baseName %>
  *
  * @class <%= serviceName %>
  * @module Hightail
@@ -12,11 +12,23 @@
  */
 'use strict';
 
-angular.wilson.service('<%=baseName%>Service',
-  [<%=serviceList1%>, function(<%=serviceList2%>) {
-    // Service Object
+angular.wilson.service('<%=baseName%>', <% if (noServices) { %> function() { <% } %> <% if (!noServices) { %> [<%=serviceList1%>, <% } %>
+  <% if (!noServices) { %> function(<%=serviceList2%>) {  <% } %>
+
+    //
+    //                       o                        |    |             |
+    //  ,---.,---.,---..    ,.,---.,---.    ,-.-.,---.|--- |---.,---.,---|,---.
+    //  `---.|---'|     \  / ||    |---'    | | ||---'|    |   ||   ||   |`---.
+    //  `---'`---'`      `'  ``---'`---'    ` ' '`---'`---'`   '`---'`---'`---'
+    //:
+
+
+
+    /************************************/
+    /******** SERVICE INTERFACE *********/
+    /************************************/
     var service = { };
 
     return service;
-  }]
+  }<% if (!noServices) { print(']'); } %>
 );
