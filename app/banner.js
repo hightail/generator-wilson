@@ -15,5 +15,5 @@ chalk.red.bold('\n                    Yeoman Generators                    ') +
 '\n      yo wilson:<generator>                                                        ' +
 '\n                                                          ' +
 '\n  Generators:                                                             ' +
-'\n      component, behavior, service, parser, guide, theme           ' +
+'\n      component, behavior, service           ' +
 chalk.red.bold('\n**********************************************************');

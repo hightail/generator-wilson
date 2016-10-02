@@ -1,7 +1,7 @@
 {
   "name": "generator-wilson",
-  "version": "0.0.0",
-  "description": "A Yeoman generator for wilson",
+  "version": "1.0.0",
+  "description": "Yeoman generators for Wilson framework contructs.",
   "keywords": [
     "yeoman-generator"
   ],

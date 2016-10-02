@@ -17,10 +17,7 @@
  */
 'use strict';
 
-angular.wilson.behavior('<%=behaviorName%>',
-
-  // Behavior Definition
-  <% if (serviceList1 && serviceList1.length) { %>[<%= serviceList1.replace(' ', ', ') %>, function(<%= serviceList2.replace(' ', ', ') %>) {
+wilson.behavior('<%=behaviorName%>', <% if (serviceList1 && serviceList1.length) { %>[<%= serviceList1.replace(' ', ', ') %>, function(<%= serviceList2.replace(' ', ', ') %>) {
   <% } else { %>function() {
   <% } %>
     return {

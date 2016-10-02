@@ -28,6 +28,7 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
     //Since we use _ a lot create a short var
     _ = _self._;
 
+
     //Create logf() convenience function
     /**
      * Like sprintf() but logs to console
@@ -69,6 +70,14 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
         process.exit(1);
       }
     }
+
+    this._setServiceType = function(serviceType) {
+      var stype = serviceType.toLowerCase();
+
+      if (!_.contains(['service', 'class', 'resource', 'utility', 'factory'], serviceType)) { stype = 'service'; }
+
+      _self.serviceType = stype;
+    };
 
     this._setServiceDir = function(dir) {
       _self.servicesDir = path.join(servicesDir, dir);
@@ -162,6 +171,12 @@ ServiceGenerator.prototype.askFor = function askFor() {
       }
 
       prompts.push({
+        name: 'serviceType',
+        message: 'What type of service is this? (service, class, resource, utility, factory)',
+        default: 'service'
+      })
+
+      prompts.push({
         name: 'serviceDir',
         message: 'Should I put this in a special service folder? (e.g. resources, utilities)',
         default: 'no'
@@ -188,6 +203,9 @@ ServiceGenerator.prototype.askFor = function askFor() {
         this.prompt(prompts, function (props) {
             if(props.serviceName) {
                 this._setServiceName(props.serviceName);
+            }
+            if(props.serviceType) {
+              this._setServiceType(props.serviceType);
             }
             if(props.serviceDir && props.serviceDir !== 'no') {
               this._setServiceDir(props.serviceDir);

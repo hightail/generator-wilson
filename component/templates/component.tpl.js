@@ -15,7 +15,7 @@
  */
 'use strict';
 
-angular.wilson.component('<%=componentName%>', {
+wilson.component('<%=componentName%>', {
   <% if (isPage) { print('page: true,'); } %>
   controller: [<%=serviceList1%>,
     function(<%=serviceList2%>) {
