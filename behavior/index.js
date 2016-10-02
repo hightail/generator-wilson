@@ -121,7 +121,7 @@ var BehaviorGenerator = module.exports = function BehaviorGenerator(args, option
 
       //Check to see if this behavior already exists
       if(fs.existsSync(info.behaviorDir) && !_self.removeBehavior) {
-        logf(chalk.red("ERROR") + ": Behavior '%s' already exists in '%s'. Choose a new behavior name or remove the existing behavior directory.", componentName, info.componentDir);
+        logf(chalk.red("ERROR") + ": Behavior '%s' already exists in '%s'. Choose a new behavior name or remove the existing behavior directory.", behaviorName, info.behaviorDir);
         process.exit(1);
       }
     }
