@@ -12,9 +12,9 @@
  */
 'use strict';
 
-wilson.<%=serviceType%>('<%=baseName%>', [<%=serviceList1%>, function(<%=serviceList2%>) {
+wilson.<%=serviceType%>('<%=baseName%>', function() {
 
-  
+    
   //   ____                  _            __  __      _   _               _     
   //  / ___|  ___ _ ____   _(_) ___ ___  |  \/  | ___| |_| |__   ___   __| |___  
   //  \___ \ / _ \ '__\ \ / / |/ __/ _ \ | |\/| |/ _ \ __| '_ \ / _ \ / _` / __| 
@@ -31,8 +31,8 @@ wilson.<%=serviceType%>('<%=baseName%>', [<%=serviceList1%>, function(<%=service
   /************************************/
   /******** SERVICE INTERFACE *********/
   /************************************/
-  var service = { };
+  var service = {};
 
   return service;
-
-}]);
+    
+});
