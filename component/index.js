@@ -27,8 +27,6 @@ var componentsDir = path.join('client/src/components/');
 var sassFilesDir = path.join('client/src/components/');
 var pageCompDir = path.join(componentsDir, 'pages');
 var buildingCompDir = path.join(componentsDir, 'building-blocks');
-var buildingTestDir = path.join('test/client/components/building-blocks');
-var pageTestDir = path.join('test/client/components/pages');
 
 function deleteFolderRecursive(path) {
   var files = [];
@@ -79,7 +77,6 @@ function checkIsPage(componentName) {
 function getComponentInfo(componentName, isPage) {
   var cn = componentName;
   var compPath = isPage ? pageCompDir : buildingCompDir;
-  var testDir  = isPage ? pageTestDir : buildingTestDir;
 
   //Construct all necessary paths
   var info = {
@@ -88,9 +85,8 @@ function getComponentInfo(componentName, isPage) {
     camelName: _.camelize(componentName),
     directiveName: getDirectiveName(componentName),
     componentDir: path.join(compPath, cn),
-    scssPath: path.join(compPath, cn, 'styles', cn + '.scss'),
-    testDir: path.join(testDir, cn)
-  }
+    scssPath: path.join(compPath, cn, 'styles', cn + '.scss')
+  };
 
   info.templateDir  = path.join(info.componentDir, 'templates');
   info.stylesDir    = path.join(info.componentDir, 'styles');
@@ -98,7 +94,6 @@ function getComponentInfo(componentName, isPage) {
   info.mobileHtmlTemplatePath = path.join(info.templateDir, cn + '.mobile.html');
   info.tabletHtmlTemplatePath = path.join(info.templateDir, cn + '.tablet.html');
   info.directivePath = path.join(info.componentDir, cn + '.js');
-  info.testPath = path.join(info.testDir, 'test-' + cn + '.js');
 
   return info;
 };
@@ -350,12 +345,6 @@ ComponentGenerator.prototype.askFor = function askFor() {
     });
 
     metaPrompts.push({
-      name: 'includeTests',
-      message: 'Should I provision test files for this component?',
-      default: 'no'
-    });
-
-    metaPrompts.push({
       name: 'author',
       message: 'May I ask who is creating this component?',
       default: _self.defaults.author
@@ -394,9 +383,6 @@ ComponentGenerator.prototype.app = function app() {
         fs.writeFileSync(routeFile, JSON.stringify(routeConfig, undefined, 2), { encoding: 'UTF-8'} );
       }
 
-      //Remove test directory
-      logf("Removing: %s", componentInfo.testDir);
-      deleteFolderRecursive(componentInfo.testDir);
     } else {
       logf(chalk.red("Remove Cancelled."));
       process.exit(1);
@@ -462,12 +448,5 @@ ComponentGenerator.prototype.app = function app() {
     this.template('component.tpl.html', componentInfo.htmlTemplatePath);
     this.template('component.tpl.scss', componentInfo.scssPath);
 
-    // Create the Test directory
-    if (this.includeTests) {
-      this.mkdir(componentInfo.testDir);
-
-      //Create Unit Tests
-      this.template('component-test.tpl.js', componentInfo.testPath);
-    }
   }
 };

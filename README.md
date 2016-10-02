@@ -12,6 +12,3 @@ Yeoman generators for wilson.
    * component
    * behavior
    * service
-   * parser
-   * theme
-   * guide

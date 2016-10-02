@@ -12,7 +12,7 @@
  */
 'use strict';
 
-angular.wilson.service('<%=baseName%>', <% if (noServices) { %> function() { <% } %> <% if (!noServices) { %> [<%=serviceList1%>, <% } %>
+wilson.<%=serviceType%>('<%=baseName%>', <% if (noServices) { %> function() { <% } %> <% if (!noServices) { %> [<%=serviceList1%>, <% } %>
   <% if (!noServices) { %> function(<%=serviceList2%>) {  <% } %>
 
     //
