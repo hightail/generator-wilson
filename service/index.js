@@ -280,7 +280,7 @@ ServiceGenerator.prototype.app = function app() {
         logf("Generating GSD Service '%s'", sn);
 
         //Create Angular directive
-        var templateName = noServices ? 'serviceNoInject.tpl.js' : 'service.tpl.js';
+        var templateName = this.noServices ? 'serviceNoInject.tpl.js' : 'service.tpl.js';
         this.template(templateName, servicePath);
       }
     }
