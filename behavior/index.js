@@ -24,7 +24,6 @@ var logf;
 
 // Behavior directory paths
 var behaviorsDir  = path.join('client/src/behaviors/');
-var testsDir      = path.join('test/client/behaviors/');
 
 function deleteFolderRecursive(path) {
   var files = [];
@@ -72,12 +71,10 @@ function getBehaviorInfo(behaviorName) {
     camelName: _.camelize(bn),
     className: _.classify(behaviorName) + 'Behavior',
     directiveName: getDirectiveName(behaviorName),
-    behaviorDir: path.join(behaviorsDir, bn),
-    testDir: path.join(testsDir, bn)
+    behaviorDir: path.join(behaviorsDir, bn)
   }
 
   info.directivePath = path.join(info.behaviorDir, bn + '.js');
-  info.testPath = path.join(info.testDir, 'test-' + bn + '.js');
 
   return info;
 };
@@ -252,12 +249,6 @@ BehaviorGenerator.prototype.askFor = function askFor() {
     });
 
     prompts.push({
-      name: 'includeTests',
-      message: 'Should I provision test files for this behavior?',
-      default: 'no'
-    });
-
-    prompts.push({
       name: 'author',
       message: 'May I ask who is creating this behavior?',
       default: _self.defaults.author
@@ -314,9 +305,6 @@ BehaviorGenerator.prototype.app = function app() {
       logf("Removing: %s", behaviorInfo.behaviorDir);
       deleteFolderRecursive(behaviorInfo.behaviorDir);
 
-      //Remove the test directory
-      logf("Removing: %s", behaviorInfo.testDir);
-      deleteFolderRecursive(behaviorInfo.testDir);
     } else {
       logf(chalk.red("Remove Cancelled."));
       process.exit(1);
@@ -342,12 +330,5 @@ BehaviorGenerator.prototype.app = function app() {
     //Create Behavior
     this.template('behavior.tpl.js', behaviorInfo.directivePath);
 
-    // Make a new test directory for this behavior
-    if (this.includeTests) {
-      this.mkdir(behaviorInfo.testDir);
-
-      // Create Behavior Test
-      this.template('behavior-test.tpl.js', behaviorInfo.testPath);
-    }
   }
 };

@@ -18,13 +18,12 @@ var yeoman    = require('yeoman-generator');
 var chalk     = require('chalk');
 var banner    = require('./banner');
 
+
 var Generator = module.exports = function Generator(args, options, config) {
     // Log Usage for Wilson Options
     console.log(banner);
 };
 
-
-util.inherits(Generator, yeoman.generators.Base);
-
+Generator.prototype.run    = function run() { };
 Generator.prototype.askFor = function askFor() { };
 Generator.prototype.app    = function app() { };
