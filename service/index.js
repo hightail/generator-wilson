@@ -56,6 +56,8 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
         process.exit(1);
     }
 
+    var testDir = this.testDir = path.join('test/client/');
+
     this._setServiceName = function(serviceName) {
         _self.baseName = serviceName;
 
@@ -79,9 +81,14 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
       _self.serviceType = stype;
     };
 
+    this._setIncludeTests = function(include) {
+      _self.includeTests = include ? true : false;
+    };
+
     this._setServiceDir = function(dir) {
       _self.servicesDir = path.join(servicesDir, dir);
-    }
+      _self.serviceSubDir = dir;
+    };
 
     this._setConfirmRemove = function(confirm) {
       _self.confirmRemove = confirm;
@@ -190,6 +197,12 @@ ServiceGenerator.prototype.askFor = function askFor() {
       });
 
       prompts.push({
+        name: 'provisionTests',
+        message: 'Shall I provision test files for this service?',
+        default: 'no'
+      });
+
+      prompts.push({
         name: 'author',
         message: 'May I ask who is creating this service?',
         default: _self.defaults.author
@@ -217,6 +230,9 @@ ServiceGenerator.prototype.askFor = function askFor() {
                         return _.trim(part);
                     });
                 }
+            }
+            if(props.includeTests && props.includeTests !== 'no') {
+              this._setIncludeTests(true);
             }
             if (props.author) {
               this._setAuthor(props.author);
@@ -282,6 +298,22 @@ ServiceGenerator.prototype.app = function app() {
         //Create Angular directive
         var templateName = this.noServices ? 'serviceNoInject.tpl.js' : 'service.tpl.js';
         this.template(templateName, servicePath);
+        
+        // If including tests, then create the test files
+        if (this.includeTests) {
+          var testDataTpl       = 'serviceTestData.tpl.js';
+          var testSuiteTpl      = 'serviceTestSuite.tpl.js';
+          var testPath          = path.join(testDir, (this.serviceSubDir || 'services'));
+          var chars             = this.serviceSubDir.split('');
+          chars[0].toUpperCase();
+
+          this.serviceCategory  = chars.join('');
+
+          if (!fs.existsSync(testPath)) { fs.mkdirSync(testPath); }
+
+          this.template(testDataTpl, path.join(testPath, (this.serviceName + 'Data.js')));
+          this.template(testSuitTpl, path.join(testPath, (this.serviceName + 'Test.js')));
+        }
       }
     }
 
