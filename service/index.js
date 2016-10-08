@@ -303,7 +303,7 @@ ServiceGenerator.prototype.app = function app() {
         if (this.provisionTests) {
           var testDataTpl       = 'serviceTestData.tpl.js';
           var testSuiteTpl      = 'serviceTestSuite.tpl.js';
-          var testPath          = path.join(testDir, (this.serviceSubDir || 'services'));
+          var testPath          = path.join(this.testDir, (this.serviceSubDir || 'services'));
           var chars             = this.serviceSubDir.split('');
           chars[0].toUpperCase();
 
