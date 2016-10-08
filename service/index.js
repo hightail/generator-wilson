@@ -81,8 +81,8 @@ var ServiceGenerator = module.exports = function ServiceGenerator(args, options,
       _self.serviceType = stype;
     };
 
-    this._setIncludeTests = function(include) {
-      _self.includeTests = include ? true : false;
+    this._setProvisionTests = function(provision) {
+      _self.provisionTests = provision ? true : false;
     };
 
     this._setServiceDir = function(dir) {
@@ -231,8 +231,8 @@ ServiceGenerator.prototype.askFor = function askFor() {
                     });
                 }
             }
-            if(props.includeTests && props.includeTests !== 'no') {
-              this._setIncludeTests(true);
+            if(props.provisionTests && props.provisionTests !== 'no') {
+              this._setProvisionTests(true);
             }
             if (props.author) {
               this._setAuthor(props.author);
@@ -300,7 +300,7 @@ ServiceGenerator.prototype.app = function app() {
         this.template(templateName, servicePath);
         
         // If including tests, then create the test files
-        if (this.includeTests) {
+        if (this.provisionTests) {
           var testDataTpl       = 'serviceTestData.tpl.js';
           var testSuiteTpl      = 'serviceTestSuite.tpl.js';
           var testPath          = path.join(testDir, (this.serviceSubDir || 'services'));
