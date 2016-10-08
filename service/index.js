@@ -311,6 +311,10 @@ ServiceGenerator.prototype.app = function app() {
 
           if (!fs.existsSync(testPath)) { fs.mkdirSync(testPath); }
 
+          testPath = path.join(testPath, this.serviceName);
+
+          if (!fs.existsSync(testPath)) { fs.mkdirSync(testPath); }
+
           this.template(testDataTpl, path.join(testPath, (this.serviceName + 'Data.js')));
           this.template(testSuitTpl, path.join(testPath, (this.serviceName + 'Test.js')));
         }
