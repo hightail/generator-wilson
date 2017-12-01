@@ -31,7 +31,7 @@ wilson.<%=serviceType%>('<%=baseName%>', function() {
   /************************************/
   /******** SERVICE INTERFACE *********/
   /************************************/
-  var service = {};
+  var service = Object.freeze({ });
 
   return service;
     
