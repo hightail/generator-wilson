@@ -86,7 +86,7 @@ wilson.component('<%=componentName%>', {
       //:
 
     }
-  ]
+  ],
   link: function($scope, $element, $attrs, controller) {
 
   }
